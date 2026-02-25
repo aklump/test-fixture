@@ -1,0 +1,18 @@
+<?php
+
+namespace AKlump\TestFixture;
+
+use Attribute;
+
+#[Attribute(Attribute::TARGET_CLASS)]
+class Fixture {
+
+  public function __construct(
+    public string $id,
+    public int $weight = 0,
+    public array $after = [],
+    public array $before = [],
+    public array $tags = [],
+  ) {
+  }
+}

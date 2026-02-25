@@ -1,0 +1,28 @@
+{
+  "name": "aklump/test-fixture",
+  "description": "Provides a standard for managing test fixtures regardless of framework.",
+  "homepage": "https://github.com/aklump/test-fixture",
+  "authors": [
+    {
+      "name": "Aaron Klump",
+      "homepage": "https://www.intheloftstudios.com",
+      "role": "Senior Developer"
+    }
+  ],
+  "require": {
+    "php": ">=8.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "AKlump\\TestFixture\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "AKlump\\TestFixture\\Tests\\": "tests/"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5"
+  }
+}
