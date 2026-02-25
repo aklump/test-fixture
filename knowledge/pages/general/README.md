@@ -23,6 +23,8 @@ Refer to `run_fixtures.php` as an example for how to run your fixtures once they
 - **Cached Discovery**: Fast execution via JSON indexing.
 - **Global Options**: Pass a shared options array to every fixture.
 
+{{ composer.install|raw }}
+
 ## Core Components
 
 ### 1. `FixtureInterface`

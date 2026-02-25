@@ -18,6 +18,24 @@ Refer to `run_fixtures.php` as an example for how to run your fixtures once they
 - **Cached Discovery**: Fast execution via JSON indexing.
 - **Global Options**: Pass a shared options array to every fixture.
 
+## Install with Composer
+
+1. Because this is an unpublished package, you must define it's repository in
+   your project's _composer.json_ file. Add the following to _composer.json_ in
+   the `repositories` array:
+   
+    ```json
+    {
+     "type": "github",
+     "url": "https://github.com/aklump/test-fixture"
+    }
+    ```
+1. Require this package:
+   
+    ```
+    composer require aklump/test-fixture:^0.0
+    ```
+
 ## Core Components
 
 ### 1. `FixtureInterface`
