@@ -4,7 +4,7 @@
 
 When you need to do some setup (create users, content, etc) before running tests, call on this project.
 
-It provices a structure for fixture management that is lightweight and test framework-agnostic.
+It provices a PHP framework for fixture management that is lightweight and can be used with any testing framework.
 
 Each fixture class (`implements \AKlump\TestFixture\FixtureInterface`) should be responsible for a single test fixture, such as creating a user.
 
