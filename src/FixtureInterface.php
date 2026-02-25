@@ -2,7 +2,7 @@
 
 namespace AKlump\TestFixture;
 
-interface TestFixtureInterface {
+interface FixtureInterface {
 
   public function setUp(array $options): void;
 }

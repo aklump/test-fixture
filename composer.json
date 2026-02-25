@@ -19,7 +19,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "AKlump\\TestFixture\\Tests\\": "tests/"
+      "AKlump\\TestFixture\\Tests\\": "./tests_phpunit/src/"
     }
   },
   "require-dev": {

@@ -9,21 +9,27 @@ class FixtureRunner {
     private array $globalOptions,
   ) {}
 
-  public function run(): void {
+  public function run(bool $silent = FALSE): void {
     foreach ($this->fixtures as $fixtureRecord) {
       $class = $fixtureRecord['class'];
       $id = $fixtureRecord['id'];
 
-      echo sprintf('Executing fixture "%s" (%s)... ', $id, $class);
+      if (!$silent) {
+        echo sprintf('Executing fixture "%s" (%s)... ', $id, $class);
+      }
 
       try {
-        /** @var TestFixtureInterface $fixture */
+        /** @var FixtureInterface $fixture */
         $fixture = new $class();
         $fixture->setUp($this->globalOptions);
-        echo "Done.\n";
+        if (!$silent) {
+          echo "Done.\n";
+        }
       } catch (\Exception $e) {
-        echo "Failed!\n";
-        echo "Error: " . $e->getMessage() . "\n";
+        if (!$silent) {
+          echo "Failed!\n";
+          echo "Error: " . $e->getMessage() . "\n";
+        }
         throw $e;
       }
     }

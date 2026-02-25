@@ -7,11 +7,14 @@ use AKlump\TestFixture\Tests\Fixtures\FixtureA;
 use AKlump\TestFixture\Tests\Fixtures\FixtureB;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \AKlump\TestFixture\FixtureRunner
+ */
 class FixtureRunnerTest extends TestCase {
 
   public function testRun() {
-    FixtureA::$called = false;
-    FixtureB::$called = false;
+    FixtureA::$called = FALSE;
+    FixtureB::$called = FALSE;
 
     $fixtures = [
       [
@@ -25,7 +28,7 @@ class FixtureRunnerTest extends TestCase {
     ];
 
     $runner = new FixtureRunner($fixtures, ['key' => 'value']);
-    $runner->run();
+    $runner->run(TRUE);
 
     $this->assertTrue(FixtureA::$called);
     $this->assertTrue(FixtureB::$called);

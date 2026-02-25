@@ -13,6 +13,7 @@ class Fixture {
     public array $after = [],
     public array $before = [],
     public array $tags = [],
+    public bool $discoverable = true,
   ) {
   }
 }

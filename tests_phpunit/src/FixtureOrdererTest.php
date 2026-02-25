@@ -5,6 +5,9 @@ namespace AKlump\TestFixture\Tests;
 use AKlump\TestFixture\FixtureOrderer;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \AKlump\TestFixture\FixtureOrderer
+ */
 class FixtureOrdererTest extends TestCase {
 
   public function testOrder() {

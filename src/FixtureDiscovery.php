@@ -26,7 +26,7 @@ class FixtureDiscovery {
       }
 
       $reflection = new ReflectionClass($class);
-      if (!$reflection->isInstantiable() || !$reflection->implementsInterface(TestFixtureInterface::class)) {
+      if (!$reflection->isInstantiable() || !$reflection->implementsInterface(FixtureInterface::class)) {
         continue;
       }
 
@@ -37,6 +37,10 @@ class FixtureDiscovery {
 
       /** @var Fixture $fixture_attribute */
       $fixture_attribute = $attributes[0]->newInstance();
+
+      if (!$fixture_attribute->discoverable) {
+        continue;
+      }
 
       $id = trim($fixture_attribute->id);
       if ($id === '') {
