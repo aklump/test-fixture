@@ -2,12 +2,12 @@
 
 namespace AKlump\TestFixture\Tests\Fixtures;
 
+use AKlump\TestFixture\AbstractFixture;
 use AKlump\TestFixture\Fixture;
-use AKlump\TestFixture\FixtureInterface;
 use AKlump\TestFixture\FixtureMetadataTrait;
 
 #[Fixture(id: 'fixture_with_trait', weight: 42, discoverable: false)]
-class FixtureWithTrait implements FixtureInterface {
+class FixtureWithTrait extends AbstractFixture {
 
   use FixtureMetadataTrait;
 

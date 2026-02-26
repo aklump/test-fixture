@@ -1,0 +1,20 @@
+<?php
+
+namespace AKlump\TestFixture;
+
+use AKlump\TestFixture\Exception\FixtureException;
+
+abstract class AbstractFixture implements FixtureInterface {
+
+  use FixtureMetadataTrait;
+
+  public function onSuccess(bool $silent = FALSE) {
+    if (!$silent) {
+      echo "Done." . PHP_EOL;
+    }
+  }
+
+  public function onFailure(FixtureException $e, bool $silent = FALSE) {
+    throw $e;
+  }
+}

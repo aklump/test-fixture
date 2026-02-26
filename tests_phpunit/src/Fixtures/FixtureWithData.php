@@ -2,11 +2,11 @@
 
 namespace AKlump\TestFixture\Tests\Fixtures;
 
+use AKlump\TestFixture\AbstractFixture;
 use AKlump\TestFixture\Fixture;
-use AKlump\TestFixture\FixtureInterface;
 
 #[Fixture(id: 'fixture_with_data', weight: 42, tags: ['tag1', 'tag2'])]
-class FixtureWithData implements FixtureInterface {
+class FixtureWithData extends AbstractFixture {
   public array $fixture;
   public static array $received = [];
   public function setUp(array $options): void {

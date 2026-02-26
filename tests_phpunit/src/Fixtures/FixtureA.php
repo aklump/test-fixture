@@ -2,11 +2,11 @@
 
 namespace AKlump\TestFixture\Tests\Fixtures;
 
+use AKlump\TestFixture\AbstractFixture;
 use AKlump\TestFixture\Fixture;
-use AKlump\TestFixture\FixtureInterface;
 
 #[Fixture(id: 'fixture_a', weight: 10, discoverable: true)]
-class FixtureA implements FixtureInterface {
+class FixtureA extends AbstractFixture {
   public static bool $called = false;
   public function setUp(array $options): void {
     self::$called = true;

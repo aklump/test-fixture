@@ -2,6 +2,7 @@
 
 namespace AKlump\TestFixture\Tests;
 
+use AKlump\TestFixture\Exception\FixtureException;
 use AKlump\TestFixture\FixtureOrderer;
 use PHPUnit\Framework\TestCase;
 
@@ -59,7 +60,7 @@ class FixtureOrdererTest extends TestCase {
   }
 
   public function testCircularDependency() {
-    $this->expectException(\RuntimeException::class);
+    $this->expectException(FixtureException::class);
     $this->expectExceptionMessage('Circular dependency detected');
 
     $orderer = new FixtureOrderer();

@@ -2,7 +2,7 @@
 
 namespace AKlump\TestFixture;
 
-use RuntimeException;
+use AKlump\TestFixture\Exception\FixtureException;
 
 class FixtureOrderer {
 
@@ -18,13 +18,13 @@ class FixtureOrderer {
       $edges[$id] = $edges[$id] ?? [];
       foreach ($record['after'] as $afterId) {
         if (!isset($fixtures[$afterId])) {
-          throw new RuntimeException(sprintf('Fixture "%s" depends on missing fixture "%s"', $id, $afterId));
+          throw new FixtureException(sprintf('Fixture "%s" depends on missing fixture "%s"', $id, $afterId));
         }
         $edges[$id][] = $afterId;
       }
       foreach ($record['before'] as $beforeId) {
         if (!isset($fixtures[$beforeId])) {
-          throw new RuntimeException(sprintf('Fixture "%s" must run before missing fixture "%s"', $id, $beforeId));
+          throw new FixtureException(sprintf('Fixture "%s" must run before missing fixture "%s"', $id, $beforeId));
         }
         $edges[$beforeId] = $edges[$beforeId] ?? [];
         $edges[$beforeId][] = $id;
@@ -51,7 +51,7 @@ class FixtureOrderer {
 
     $visit = function(string $node) use (&$visit, &$sorted, &$visited, &$visiting, $edges, $fixtures) {
       if (isset($visiting[$node])) {
-        throw new RuntimeException(sprintf('Circular dependency detected involving fixture "%s"', $node));
+        throw new FixtureException(sprintf('Circular dependency detected involving fixture "%s"', $node));
       }
       if (isset($visited[$node])) {
         return;

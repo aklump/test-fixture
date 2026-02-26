@@ -2,6 +2,7 @@
 
 namespace AKlump\TestFixture\Tests;
 
+use AKlump\TestFixture\Exception\FixtureException;
 use AKlump\TestFixture\FixtureDiscovery;
 use PHPUnit\Framework\TestCase;
 
@@ -40,7 +41,7 @@ class FixtureDiscoveryTest extends TestCase {
   }
 
   public function testDuplicateFixtureIdThrowsException() {
-    $this->expectException(\RuntimeException::class);
+    $this->expectException(FixtureException::class);
     $this->expectExceptionMessage('Duplicate fixture id "fixture_a" found');
     $discovery = new FixtureDiscovery(__DIR__ . '/../../vendor');
     // We include both namespaces to trigger the duplicate ID error

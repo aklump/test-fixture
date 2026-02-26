@@ -2,17 +2,62 @@
 
 namespace AKlump\TestFixture\Tests;
 
+use AKlump\TestFixture\Exception\FixtureException;
 use AKlump\TestFixture\FixtureRunner;
 use AKlump\TestFixture\Tests\Fixtures\FixtureA;
 use AKlump\TestFixture\Tests\Fixtures\FixtureB;
 use AKlump\TestFixture\Tests\Fixtures\FixtureWithData;
 use AKlump\TestFixture\Tests\Fixtures\FixtureWithTrait;
+use AKlump\TestFixture\Tests\Fixtures\MockFixture;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \AKlump\TestFixture\FixtureRunner
  */
 class FixtureRunnerTest extends TestCase {
+
+  public function testOnSuccessAndOnFailure() {
+    MockFixture::$successCount = 0;
+    MockFixture::$failureCount = 0;
+
+    $fixtures = [
+      [
+        'id' => 'mock_success',
+        'class' => MockFixture::class,
+      ],
+    ];
+
+    $runner = new FixtureRunner($fixtures, []);
+    $runner->run(TRUE);
+
+    $this->assertEquals(1, MockFixture::$successCount);
+    $this->assertEquals(0, MockFixture::$failureCount);
+
+    MockFixture::$shouldFail = true;
+    try {
+      $runner->run(TRUE);
+    }
+    catch (FixtureException $e) {
+    }
+
+    $this->assertEquals(1, MockFixture::$successCount);
+    $this->assertEquals(1, MockFixture::$failureCount);
+    MockFixture::$shouldFail = false;
+  }
+
+  public function testOnFailureThrowsException() {
+    $fixtures = [
+      [
+        'id' => 'mock_fail',
+        'class' => MockFixture::class,
+      ],
+    ];
+    MockFixture::$shouldFail = true;
+    $runner = new FixtureRunner($fixtures, []);
+    $this->expectException(FixtureException::class);
+    $runner->run(TRUE);
+    MockFixture::$shouldFail = false;
+  }
 
   public function testRun() {
     FixtureA::$called = FALSE;

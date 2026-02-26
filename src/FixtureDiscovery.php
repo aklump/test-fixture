@@ -2,11 +2,11 @@
 
 namespace AKlump\TestFixture;
 
+use AKlump\TestFixture\Exception\FixtureException;
 use ReflectionClass;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RegexIterator;
-use RuntimeException;
 
 class FixtureDiscovery {
 
@@ -57,11 +57,11 @@ class FixtureDiscovery {
 
       $id = trim($fixture_attribute->id);
       if ($id === '') {
-        throw new RuntimeException(sprintf('Fixture id must be a non-empty string on class "%s".', $class));
+        throw new FixtureException(sprintf('Fixture id must be a non-empty string on class "%s".', $class));
       }
 
       if (array_key_exists($id, $fixtures)) {
-        throw new RuntimeException(sprintf(
+        throw new FixtureException(sprintf(
           'Duplicate fixture id "%s" found on class "%s" (already defined by "%s").',
           $id,
           $class,
@@ -91,7 +91,7 @@ class FixtureDiscovery {
   private function normalizeStringList(array $value, string $field, string $id, string $class, bool $dedupe = false): array {
     foreach ($value as $i => $item) {
       if (!is_string($item)) {
-        throw new RuntimeException(sprintf(
+        throw new FixtureException(sprintf(
           'Fixture "%s" (%s) has non-string value in "%s" at index %d.',
           $id,
           $class,

@@ -2,6 +2,8 @@
 
 namespace AKlump\TestFixture;
 
+use AKlump\TestFixture\Exception\FixtureException;
+
 class FixtureRunner {
 
   public function __construct(
@@ -26,16 +28,10 @@ class FixtureRunner {
           $fixture->fixture = $fixture_record;
         }
         $fixture->setUp($this->globalOptions);
-        if (!$silent) {
-          echo "Done.\n";
-        }
+        $fixture->onSuccess($silent);
       }
-      catch (\Exception $e) {
-        if (!$silent) {
-          echo "Failed!\n";
-          echo "Error: " . $e->getMessage() . "\n";
-        }
-        throw $e;
+      catch (FixtureException $e) {
+        $fixture->onFailure($e, $silent);
       }
     }
   }
