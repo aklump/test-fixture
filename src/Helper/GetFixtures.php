@@ -46,11 +46,7 @@ class GetFixtures {
     else {
       $fixtures = $cache->get();
       if ($fixtures === NULL) {
-        echo "Cache miss or invalidated, discovering fixtures...\n";
         $fixtures = $cache->rebuild($discovery, $namespace_allow_list);
-      }
-      else {
-        echo "Using cached fixtures.\n";
       }
     }
 

@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \AKlump\TestFixture\FixtureDiscovery
+ * @uses \AKlump\TestFixture\Fixture
  */
 class FixtureDiscoveryTest extends TestCase {
 
@@ -46,8 +47,35 @@ class FixtureDiscoveryTest extends TestCase {
     $discovery = new FixtureDiscovery(__DIR__ . '/../../vendor');
     // We include both namespaces to trigger the duplicate ID error
     $discovery->discover([
-      'AKlump\TestFixture\Tests\Fixtures',
-      'AKlump\TestFixture\Tests\FixturesDuplicate',
+      'AKlump\TestFixture\Tests\Fixtures\\',
+      'AKlump\TestFixture\Tests\FixturesDuplicate\\',
     ]);
+  }
+
+  public function testEmptyFixtureIdThrowsException() {
+    $this->expectException(FixtureException::class);
+    $this->expectExceptionMessage('Fixture id must be a non-empty string');
+    $discovery = new FixtureDiscovery(__DIR__ . '/../../vendor');
+    $discovery->discover(['AKlump\TestFixture\Tests\FixturesEmptyId\\']);
+  }
+
+  public function testNormalizeStringListWithNonStringThrowsException() {
+    $this->expectException(FixtureException::class);
+    $this->expectExceptionMessage('has non-string value');
+    $discovery = new FixtureDiscovery(__DIR__ . '/../../vendor');
+    $discovery->discover(['AKlump\TestFixture\Tests\FixturesNonStringValue\\']);
+  }
+
+  public function testDiscoverSkipsInvalidClasses() {
+    $discovery = new FixtureDiscovery(__DIR__ . '/../../vendor');
+    $fixtures = $discovery->discover(['AKlump\TestFixture\Tests\FixturesInvalid\\']);
+    $this->assertEmpty($fixtures);
+  }
+
+  public function testNormalizeStringListWithDedupe() {
+    $discovery = new FixtureDiscovery(__DIR__ . '/../../vendor');
+    $fixtures = $discovery->discover(['AKlump\TestFixture\Tests\FixturesDedupe\\']);
+    $this->assertArrayHasKey('dedupe', $fixtures);
+    $this->assertEquals(['tag1', 'tag2'], $fixtures['dedupe']['tags']);
   }
 }

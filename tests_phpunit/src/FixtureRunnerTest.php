@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \AKlump\TestFixture\FixtureRunner
+ * @uses \AKlump\TestFixture\AbstractFixture
  */
 class FixtureRunnerTest extends TestCase {
 
@@ -79,6 +80,18 @@ class FixtureRunnerTest extends TestCase {
 
     $this->assertTrue(FixtureA::$called);
     $this->assertTrue(FixtureB::$called);
+  }
+
+  public function testRunVerboseOutput() {
+    $fixtures = [
+      [
+        'id' => 'fixture_a',
+        'class' => FixtureA::class,
+      ],
+    ];
+    $runner = new FixtureRunner($fixtures, []);
+    $this->expectOutputString(sprintf('Executing fixture "fixture_a" (%s)... %sDone.%s', FixtureA::class, PHP_EOL, PHP_EOL));
+    $runner->run(FALSE);
   }
 
   public function testFixtureAccessesMetadata() {

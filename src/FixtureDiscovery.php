@@ -104,11 +104,7 @@ class FixtureDiscovery {
 
     $value = array_values(array_filter($value, static fn(string $s) => $s !== ''));
 
-    if ($dedupe) {
-      $value = array_values(array_unique($value));
-    }
-
-    return $value;
+    return $dedupe ? array_values(array_unique($value)) : $value;
   }
 
   private function getCandidateClasses(): array {
@@ -127,7 +123,9 @@ class FixtureDiscovery {
       $psr4 = require $psr4_file;
       foreach ($psr4 as $namespace => $dirs) {
         foreach ($dirs as $dir) {
-          $classes = array_merge($classes, $this->scanDirectoryForClasses($dir, $namespace));
+          if (is_dir($dir)) {
+            $classes = array_merge($classes, $this->scanDirectoryForClasses($dir, $namespace));
+          }
         }
       }
     }
@@ -136,10 +134,6 @@ class FixtureDiscovery {
   }
 
   private function scanDirectoryForClasses(string $dir, string $namespace): array {
-    if (!is_dir($dir)) {
-      return [];
-    }
-
     $classes = [];
     $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
     $php_files = new RegexIterator($iterator, '/\.php$/');
