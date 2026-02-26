@@ -60,7 +60,7 @@ class FixtureDiscovery {
         throw new RuntimeException(sprintf('Fixture id must be a non-empty string on class "%s".', $class));
       }
 
-      if (isset($fixtures[$id])) {
+      if (array_key_exists($id, $fixtures)) {
         throw new RuntimeException(sprintf(
           'Duplicate fixture id "%s" found on class "%s" (already defined by "%s").',
           $id,
@@ -113,16 +113,16 @@ class FixtureDiscovery {
     $classes = [];
 
     // 1. From classmap
-    $classmapFile = $this->vendorDir . '/composer/autoload_classmap.php';
-    if (file_exists($classmapFile)) {
-      $classmap = require $classmapFile;
-      $classes = array_keys($classmap);
+    $classmap_file = $this->vendorDir . '/composer/autoload_classmap.php';
+    if (file_exists($classmap_file)) {
+      $classmap = require $classmap_file;
+      $classes = array_merge($classes, array_keys($classmap));
     }
 
     // 2. From PSR-4
-    $psr4File = $this->vendorDir . '/composer/autoload_psr4.php';
-    if (file_exists($psr4File)) {
-      $psr4 = require $psr4File;
+    $psr4_file = $this->vendorDir . '/composer/autoload_psr4.php';
+    if (file_exists($psr4_file)) {
+      $psr4 = require $psr4_file;
       foreach ($psr4 as $namespace => $dirs) {
         foreach ($dirs as $dir) {
           $classes = array_merge($classes, $this->scanDirectoryForClasses($dir, $namespace));
