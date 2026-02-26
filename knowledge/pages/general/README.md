@@ -64,6 +64,29 @@ class UserRolesFixture implements FixtureInterface {
 }
 ```
 
+### Accessing Metadata via `FixtureMetadataTrait`
+
+If you want your fixture to have access to its own metadata (e.g., to get the `id` or `tags` defined in the attribute), you can use the `FixtureMetadataTrait`.
+
+This trait adds a public `array $fixture` property to your class. The `FixtureRunner` detects this property and populates it with the fixture's metadata record before calling `setUp()`.
+
+```php
+use AKlump\TestFixture\FixtureInterface;
+use AKlump\TestFixture\Fixture;
+use AKlump\TestFixture\FixtureMetadataTrait;
+
+#[Fixture(id: 'user_roles')]
+class UserRolesFixture implements FixtureInterface {
+
+  use FixtureMetadataTrait;
+
+  public function setUp(array $options): void {
+    $id = $this->fixture['id'];
+    // ...
+  }
+}
+```
+
 ## Discovery and Execution
 
 ### Discovery

@@ -11,9 +11,9 @@ class FixtureRunner {
   }
 
   public function run(bool $silent = FALSE): void {
-    foreach ($this->fixtures as $fixtureRecord) {
-      $class = $fixtureRecord['class'];
-      $id = $fixtureRecord['id'];
+    foreach ($this->fixtures as $fixture_record) {
+      $class = $fixture_record['class'];
+      $id = $fixture_record['id'];
 
       if (!$silent) {
         echo sprintf('Executing fixture "%s" (%s)... ', $id, $class) . PHP_EOL;
@@ -22,6 +22,9 @@ class FixtureRunner {
       try {
         /** @var FixtureInterface $fixture */
         $fixture = new $class();
+        if (property_exists($fixture, 'fixture')) {
+          $fixture->fixture = $fixture_record;
+        }
         $fixture->setUp($this->globalOptions);
         if (!$silent) {
           echo "Done.\n";

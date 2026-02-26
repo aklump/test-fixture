@@ -80,6 +80,8 @@ class FixtureDiscovery {
         'after' => $after,
         'before' => $before,
         'tags' => $tags,
+        'discoverable' => $fixture_attribute->discoverable,
+        'namespace' => $reflection->getNamespaceName(),
       ];
     }
 

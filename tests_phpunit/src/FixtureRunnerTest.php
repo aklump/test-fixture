@@ -5,6 +5,8 @@ namespace AKlump\TestFixture\Tests;
 use AKlump\TestFixture\FixtureRunner;
 use AKlump\TestFixture\Tests\Fixtures\FixtureA;
 use AKlump\TestFixture\Tests\Fixtures\FixtureB;
+use AKlump\TestFixture\Tests\Fixtures\FixtureWithData;
+use AKlump\TestFixture\Tests\Fixtures\FixtureWithTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -32,5 +34,34 @@ class FixtureRunnerTest extends TestCase {
 
     $this->assertTrue(FixtureA::$called);
     $this->assertTrue(FixtureB::$called);
+  }
+
+  public function testFixtureAccessesMetadata() {
+    $metadata = [
+      'id' => 'fixture_with_data',
+      'class' => FixtureWithData::class,
+      'weight' => 42,
+      'tags' => ['tag1', 'tag2'],
+    ];
+    $fixtures = [$metadata];
+
+    $runner = new FixtureRunner($fixtures, []);
+    $runner->run(TRUE);
+
+    $this->assertEquals($metadata, FixtureWithData::$received);
+  }
+
+  public function testFixtureAccessesMetadataViaTrait() {
+    $metadata = [
+      'id' => 'fixture_with_trait',
+      'class' => FixtureWithTrait::class,
+      'weight' => 42,
+    ];
+    $fixtures = [$metadata];
+
+    $runner = new FixtureRunner($fixtures, []);
+    $runner->run(TRUE);
+
+    $this->assertEquals($metadata, FixtureWithTrait::$received);
   }
 }
