@@ -38,14 +38,11 @@ class FixtureCache {
   private function isInvalidated(): bool {
     $mtime = filemtime($this->cacheFile);
 
-    $psr4File = $this->vendorDir . '/composer/autoload_psr4.php';
-    if (file_exists($psr4File) && filemtime($psr4File) > $mtime) {
-      return true;
-    }
-
-    $classmapFile = $this->vendorDir . '/composer/autoload_classmap.php';
-    if (file_exists($classmapFile) && filemtime($classmapFile) > $mtime) {
-      return true;
+    foreach (['autoload_psr4.php', 'autoload_classmap.php'] as $file) {
+      $path = $this->vendorDir . '/composer/' . $file;
+      if (file_exists($path) && filemtime($path) > $mtime) {
+        return true;
+      }
     }
 
     return false;

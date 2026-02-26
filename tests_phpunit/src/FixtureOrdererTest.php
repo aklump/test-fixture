@@ -71,4 +71,18 @@ class FixtureOrdererTest extends TestCase {
 
     $orderer->order($fixtures);
   }
+
+  public function testMissingDependencyAfterThrowsException() {
+    $this->expectException(FixtureException::class);
+    $this->expectExceptionMessage('depends on missing fixture "missing"');
+    $orderer = new FixtureOrderer();
+    $orderer->order(['a' => ['id' => 'a', 'after' => ['missing'], 'before' => []]]);
+  }
+
+  public function testMissingDependencyBeforeThrowsException() {
+    $this->expectException(FixtureException::class);
+    $this->expectExceptionMessage('must run before missing fixture "missing"');
+    $orderer = new FixtureOrderer();
+    $orderer->order(['a' => ['id' => 'a', 'after' => [], 'before' => ['missing']]]);
+  }
 }
