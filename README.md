@@ -47,6 +47,8 @@ namespace AKlump\TestFixture;
 
 interface FixtureInterface {
   public function setUp(array $options): void;
+  public function onSuccess(bool $silent = FALSE);
+  public function onFailure(FixtureException $e, bool $silent = FALSE);
 }
 ```
 
@@ -69,17 +71,94 @@ use AKlump\TestFixture\Fixture;
 
 #[Fixture(id: 'user_roles', weight: -10, after: ['base_schema'])]
 class UserRolesFixture implements FixtureInterface {
+  // ...
+}
+```
+### 3. Accessing Metadata via `FixtureMetadataTrait`
+
+If you want your fixture to have access to its own metadata (e.g., to get the `id` or `tags` defined in the attribute), you can use the `FixtureMetadataTrait`.
+
+This trait adds a public `array $fixture` property to your class. The `FixtureRunner` detects this property and populates it with the fixture's metadata record before calling `setUp()`.
+
+```php
+use AKlump\TestFixture\FixtureInterface;
+use AKlump\TestFixture\Fixture;
+use AKlump\TestFixture\FixtureMetadataTrait;
+
+#[Fixture(id: 'user_roles')]
+class UserRolesFixture implements FixtureInterface {
+
+  use FixtureMetadataTrait;
+
   public function setUp(array $options): void {
-    // Implementation
+    $id = $this->fixture['id'];
+    // ...
   }
 }
 ```
+
+
+### 4. `AbstractFixture` Class
+
+The `AbstractFixture` class provides a base implementation of `FixtureInterface` and includes the `FixtureMetadataTrait`. Extending this class simplifies fixture development and allows for custom success/failure handling.
+
+```php
+use AKlump\TestFixture\AbstractFixture;
+use AKlump\TestFixture\Fixture;
+
+#[Fixture(id: 'user_roles')]
+class UserRolesFixture extends AbstractFixture {
+
+  public function setUp(array $options): void {
+    $id = $this->fixture['id'];
+    // ...
+  }
+
+}
+```
+
+#### Customizing Success and Failure
+
+You can override `onSuccess` and `onFailure` to provide custom feedback, such as using emojis for better visibility.
+
+```php
+use AKlump\TestFixture\AbstractFixture;
+use AKlump\TestFixture\Fixture;
+use AKlump\TestFixture\Exception\FixtureException;
+
+#[Fixture(id: 'custom_output')]
+class CustomOutputFixture extends AbstractFixture {
+
+  public function setUp(array $options): void {
+    // ...
+  }
+
+  public function onSuccess(bool $silent = FALSE) {
+    if (!$silent) {
+      echo "✅ Successfully completed!" . PHP_EOL;
+    }
+  }
+
+  public function onFailure(FixtureException $e, bool $silent = FALSE) {
+    if (!$silent) {
+      echo "❌ Failed: " . $e->getMessage() . PHP_EOL;
+    }
+    // Don't forget to re-throw if you want the runner to catch it!
+    throw $e;
+  }
+
+}
+```
+
+## Presumptions
+
+1. One fixture represents a single atomic test-required element (user, piece of content, page, etc).
 
 ## Discovery and Execution
 
 ### Discovery
 
-`FixtureDiscovery` uses `vendor/composer/autoload_psr4.php` and `vendor/composer/autoload_classmap.php` to find classes implementing `FixtureInterface` with the `#[Fixture]` attribute.
+`FixtureDiscovery` uses `vendor/composer/autoload_psr4.php` and `vendor/composer/autoload_classmap.php` to find classes implementing `FixtureInterface` with the `#[Fixture]` attribute.  You may hide a fixture by setting `discoverable: TRUE` in the `#[Fixture]` attribute.
 
 ### Ordering
 
