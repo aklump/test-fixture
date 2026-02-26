@@ -16,11 +16,24 @@ class FixtureDiscovery {
     $this->vendorDir = $vendor_dir;
   }
 
-  public function discover(): array {
+  public function discover(array $namespace_allow_list = []): array {
     $classes = $this->getCandidateClasses();
     $fixtures = [];
 
     foreach ($classes as $class) {
+      if (!empty($namespace_allow_list)) {
+        $matched = false;
+        foreach ($namespace_allow_list as $namespace) {
+          if (str_starts_with($class, $namespace)) {
+            $matched = true;
+            break;
+          }
+        }
+        if (!$matched) {
+          continue;
+        }
+      }
+
       if (!class_exists($class)) {
         continue;
       }

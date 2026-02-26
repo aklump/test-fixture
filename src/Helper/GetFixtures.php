@@ -8,12 +8,26 @@ use AKlump\TestFixture\FixtureOrderer;
 
 class GetFixtures {
 
-  public function __invoke(string $vendor_dir = '', bool $rebuild_cache = FALSE): array {
+  public function __invoke(string $vendor_dir = '', array $namespace_allow_list = [], bool $rebuild_cache = FALSE): array {
+    if (!is_dir($vendor_dir)) {
+      throw new \InvalidArgumentException("Is not a directory: $vendor_dir");
+    }
+    elseif (basename($vendor_dir) !== 'vendor') {
+      throw new \InvalidArgumentException("Must be a Composer vendor dir: $vendor_dir");
+    }
+
     $cache_file = getenv('TEST_FIXTURE_CACHE_FILE') ?: '';
 
     if ($cache_file === '') {
       $vendor_dir_real = $vendor_dir !== '' ? (realpath($vendor_dir) ?: $vendor_dir) : '';
-      $cache_key = $vendor_dir_real !== '' ? sha1($vendor_dir_real) : 'default';
+      $cache_key_parts = [$vendor_dir_real];
+      if (!empty($namespace_allow_list)) {
+        $namespace_allow_list = $this->normalizeNamespaces($namespace_allow_list);
+        $sorted_allow_list = $namespace_allow_list;
+        sort($sorted_allow_list);
+        $cache_key_parts[] = implode('|', $sorted_allow_list);
+      }
+      $cache_key = !empty($cache_key_parts) ? sha1(implode(':', $cache_key_parts)) : 'default';
 
       $cache_dir = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'test_fixture';
       if (!is_dir($cache_dir)) {
@@ -27,13 +41,13 @@ class GetFixtures {
     $cache = new FixtureCache($cache_file, $vendor_dir);
 
     if ($rebuild_cache) {
-      $fixtures = $cache->rebuild($discovery);
+      $fixtures = $cache->rebuild($discovery, $namespace_allow_list);
     }
     else {
       $fixtures = $cache->get();
       if ($fixtures === NULL) {
         echo "Cache miss or invalidated, discovering fixtures...\n";
-        $fixtures = $cache->rebuild($discovery);
+        $fixtures = $cache->rebuild($discovery, $namespace_allow_list);
       }
       else {
         echo "Using cached fixtures.\n";
@@ -43,5 +57,10 @@ class GetFixtures {
     $orderer = new FixtureOrderer();
 
     return $orderer->order($fixtures);
+  }
+
+  private function normalizeNamespaces(array $namespace_allow_list) {
+    // @see \AKlump\TestFixture\FixtureDiscovery::discover
+    return array_map(fn($namespace) => trim($namespace, '\\') . '\\', $namespace_allow_list);
   }
 }

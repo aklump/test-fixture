@@ -7,7 +7,8 @@ class FixtureRunner {
   public function __construct(
     private array $fixtures,
     private array $globalOptions,
-  ) {}
+  ) {
+  }
 
   public function run(bool $silent = FALSE): void {
     foreach ($this->fixtures as $fixtureRecord) {
@@ -15,7 +16,7 @@ class FixtureRunner {
       $id = $fixtureRecord['id'];
 
       if (!$silent) {
-        echo sprintf('Executing fixture "%s" (%s)... ', $id, $class);
+        echo sprintf('Executing fixture "%s" (%s)... ', $id, $class) . PHP_EOL;
       }
 
       try {
@@ -25,7 +26,8 @@ class FixtureRunner {
         if (!$silent) {
           echo "Done.\n";
         }
-      } catch (\Exception $e) {
+      }
+      catch (\Exception $e) {
         if (!$silent) {
           echo "Failed!\n";
           echo "Error: " . $e->getMessage() . "\n";

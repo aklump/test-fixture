@@ -5,7 +5,7 @@ namespace AKlump\TestFixture\Tests\Fixtures;
 use AKlump\TestFixture\Fixture;
 use AKlump\TestFixture\FixtureInterface;
 
-#[Fixture(id: 'fixture_b', weight: 5, after: ['fixture_a'], discoverable: false)]
+#[Fixture(id: 'fixture_b', weight: 5, after: ['fixture_a'], discoverable: true)]
 class FixtureB implements FixtureInterface {
   public static bool $called = false;
   public function setUp(array $options): void {

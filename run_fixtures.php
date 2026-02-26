@@ -9,7 +9,7 @@ use AKlump\TestFixture\Helper\GetFixtures;
 $rebuild = in_array('--rebuild', $argv);
 
 try {
-  $ordered_fixtures = (new GetFixtures())($vendor_dir = __DIR__ . '/vendor', $rebuild);
+  $ordered_fixtures = (new GetFixtures())($vendor_dir = __DIR__ . '/vendor', [], $rebuild);
 }
 catch (Exception $e) {
   echo "Error ordering fixtures: " . $e->getMessage() . "\n";

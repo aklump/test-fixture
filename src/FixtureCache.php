@@ -29,8 +29,8 @@ class FixtureCache {
     $this->updateLastModified();
   }
 
-  public function rebuild(FixtureDiscovery $discovery): array {
-    $fixtures = $discovery->discover();
+  public function rebuild(FixtureDiscovery $discovery, array $namespace_allow_list = []): array {
+    $fixtures = $discovery->discover($namespace_allow_list);
     $this->set($fixtures);
     return $fixtures;
   }
